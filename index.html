@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<meta name="robots" content="noindex, nofollow">
+<title>민법의 이해 · 기말 한 손에</title>
+<style>
+  :root{
+    --navy:#1f3a5f; --navy2:#2c5282; --ink:#1a2230; --sub:#5b6675;
+    --line:#e6e9ef; --bg:#f5f6f9; --card:#ffffff; --accent:#3a6ea5;
+    --ox-o:#1f7a4d; --ox-x:#c0392b; --soft:#eef2f8; --gold:#b8860b;
+    --shadow:0 1px 3px rgba(20,30,50,.08),0 4px 16px rgba(20,30,50,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;
+    touch-action:manipulation;        /* 더블탭 확대·탭 지연 방지 (핀치 줌은 유지) */
+  }
+  /* iOS에서 입력 없이도 더블탭 줌이 남는 경우 대비 */
+  button,.lcard,.tab,.reveal,.toTop{touch-action:manipulation;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+    background:var(--bg); color:var(--ink);
+    font-size:17px; line-height:1.72; letter-spacing:-.01em;
+    -webkit-text-size-adjust:100%;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+
+  /* header */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--navy);
+    color:#fff; padding:calc(env(safe-area-inset-top) + 12px) 18px 12px;
+    box-shadow:0 2px 10px rgba(20,30,50,.18);
+  }
+  .hd-row{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px;min-height:30px;}
+  .hd-title{font-size:18px;font-weight:800;letter-spacing:-.02em;flex:1;}
+  .back{
+    background:rgba(255,255,255,.15);border:0;color:#fff;
+    font-size:15px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;
+    display:none;
+  }
+  .back.show{display:inline-block;}
+  .hd-mini{font-size:12.5px;opacity:.85;font-weight:600;}
+
+  main{padding:18px 16px 60px;}
+
+  /* home intro */
+  .intro{
+    background:linear-gradient(135deg,#2c5282,#1f3a5f);
+    color:#fff;border-radius:18px;padding:20px 18px;margin-bottom:18px;
+    box-shadow:var(--shadow);
+  }
+  .intro h1{margin:0 0 6px;font-size:21px;font-weight:800;letter-spacing:-.02em;}
+  .intro p{margin:0;font-size:14.5px;line-height:1.65;opacity:.92;}
+  .intro .pill{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;
+    padding:3px 11px;font-size:12.5px;font-weight:700;margin-top:12px;}
+
+  /* lesson cards */
+  .grid{display:flex;flex-direction:column;gap:11px;}
+  .lcard{
+    background:var(--card);border-radius:16px;padding:16px 16px;
+    box-shadow:var(--shadow);cursor:pointer;display:flex;align-items:center;gap:14px;
+    border:1px solid var(--line);transition:transform .08s ease;
+  }
+  .lcard:active{transform:scale(.985);}
+  .lcard .ic{font-size:26px;width:46px;height:46px;flex:none;display:flex;align-items:center;justify-content:center;
+    background:var(--soft);border-radius:13px;}
+  .lcard .tx{flex:1;min-width:0;}
+  .lcard .no{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.02em;}
+  .lcard .tt{font-size:17px;font-weight:800;letter-spacing:-.02em;margin:1px 0;}
+  .lcard .ss{font-size:13px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lcard .arr{color:#c2c9d6;font-size:22px;flex:none;}
+
+  /* detail */
+  .dtitle{display:flex;align-items:center;gap:12px;margin:2px 0 14px;}
+  .dtitle .ic{font-size:30px;}
+  .dtitle h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em;}
+  .dtitle .ss{font-size:13px;color:var(--sub);margin-top:2px;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:16px;position:sticky;top:0;}
+  .tab{
+    flex:1;text-align:center;padding:11px 0;border-radius:12px;font-size:15px;font-weight:800;
+    background:var(--card);color:var(--sub);border:1px solid var(--line);cursor:pointer;
+  }
+  .tab.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  /* notes */
+  .sec{background:var(--card);border-radius:16px;padding:16px 17px;margin-bottom:13px;
+    box-shadow:var(--shadow);border:1px solid var(--line);}
+  .sec h3{margin:0 0 9px;font-size:17px;font-weight:800;letter-spacing:-.02em;
+    display:flex;align-items:center;gap:7px;}
+  .sec h3 .dot{width:7px;height:18px;background:var(--accent);border-radius:3px;display:inline-block;}
+  .sec p{margin:0 0 10px;}
+  .sec p:last-child{margin-bottom:0;}
+  .sec strong{color:var(--navy);font-weight:800;}
+  .sec .hl{background:#fff3cd;padding:0 3px;border-radius:3px;font-weight:700;color:#7a5c00;}
+  .sec ul{margin:6px 0 4px;padding-left:4px;list-style:none;}
+  .sec ul li{position:relative;padding-left:20px;margin-bottom:7px;}
+  .sec ul li:before{content:"▸";position:absolute;left:0;color:var(--accent);font-weight:800;}
+  .law{display:inline-block;background:var(--soft);color:var(--navy2);font-size:13px;font-weight:800;
+    padding:1px 7px;border-radius:6px;letter-spacing:-.01em;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0;}
+  .vs > div{background:var(--soft);border-radius:11px;padding:11px 12px;font-size:14.5px;}
+  .vs b{display:block;color:var(--navy);font-size:13px;margin-bottom:4px;}
+
+  .exam{background:#fff8e8;border:1px solid #f0dca5;border-radius:14px;padding:13px 15px;margin-bottom:13px;}
+  .exam .lab{font-size:12.5px;font-weight:800;color:var(--gold);letter-spacing:.02em;margin-bottom:5px;}
+  .exam p{margin:0;font-size:14.5px;line-height:1.6;}
+
+  /* quiz */
+  .qhead{font-size:13.5px;color:var(--sub);margin-bottom:12px;font-weight:600;}
+  .q{background:var(--card);border-radius:16px;padding:15px 16px;margin-bottom:12px;
+    box-shadow:var(--shadow);border:1px solid var(--line);}
+  .qtype{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 9px;border-radius:999px;
+    margin-bottom:9px;letter-spacing:.02em;}
+  .t-단답{background:#e3f0ff;color:#1c5fb0;}
+  .t-OX{background:#ffe9e3;color:#c0392b;}
+  .t-원칙{background:#ede3ff;color:#6b3fb0;}
+  .t-사례{background:#e3fbef;color:#1f7a4d;}
+  .qq{font-size:16.5px;font-weight:700;line-height:1.6;margin-bottom:12px;}
+  .qq .blank{color:var(--accent);font-weight:900;}
+  .reveal{width:100%;border:0;background:var(--soft);color:var(--navy);
+    font-size:15px;font-weight:800;padding:11px 0;border-radius:11px;cursor:pointer;}
+  .ans{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;}
+  .ans.show{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .ans .a{font-size:18px;font-weight:900;color:var(--navy);margin-bottom:7px;}
+  .ans .a.ox-o{color:var(--ox-o);}
+  .ans .a.ox-x{color:var(--ox-x);}
+  .ans .why{font-size:14.5px;color:var(--ink);line-height:1.65;}
+  .ans .why strong{color:var(--navy);}
+
+  footer{text-align:center;color:#aab2c0;font-size:12px;padding:20px 0 8px;}
+  .toTop{display:block;text-align:center;color:var(--accent);font-weight:800;font-size:14px;
+    padding:14px;cursor:pointer;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd-row">
+    <button class="back" id="back">‹ 목록</button>
+    <div class="hd-title" id="hdTitle">민법의 이해 · 기말 한 손에</div>
+    <div class="hd-mini" id="hdMini">11강</div>
+  </div>
+</header>
+<main><div class="wrap" id="app"></div></main>
+<footer>걸으면서 한 문제씩 · 국민대 2026-1 민법의 이해 기말 대비</footer>
+
+<script>
+/* ====================== 데이터 ====================== */
+const DATA = [
+{
+  id:"g1", no:"제1강", title:"물권 일반", sub:"물권이 뭔지부터 — 채권과 뭐가 다른가", icon:"🏛️",
+  notes:[
+    {h:"물권이 뭐예요?", html:`<p><strong>물권</strong>은 '물건을 직접 지배하는 권리'예요. 누구의 허락도 없이 내가 그 물건을 직접 쓰고·팔고·담보 잡힐 수 있는 힘이죠. 대표가 <strong>소유권</strong>이에요.</p>
+    <p>핵심은 <span class="hl">채권과의 대비</span>예요. <strong>채권</strong>은 '사람에게 ~해달라고 청구하는 권리'(예: 돈 갚아라). 즉 <strong>물권은 물건을, 채권은 사람을</strong> 향해요.</p>`},
+    {h:"물권의 3대 성질", html:`<ul>
+      <li><strong>직접지배성</strong> — 남을 거치지 않고 물건을 바로 지배해요.</li>
+      <li><strong>배타성</strong> — 한 물건에 같은 내용의 물권은 하나만(내 소유면 남의 소유 동시 불가).</li>
+      <li><strong>절대성(대세효)</strong> — <span class="hl">누구에게나</span> 주장할 수 있어요. 반대로 채권은 특정인에게만(상대권).</li>
+    </ul>`},
+    {h:"물권은 마음대로 못 만든다 — 물권법정주의", html:`<p><strong>물권법정주의</strong> <span class="law">§185</span>: 물권은 <strong>법률과 관습법이 정한 것만</strong> 인정돼요. 당사자끼리 "새로운 물권" 못 만들어요. 거래 안전을 위해 종류를 딱 정해둔 거죠.</p>`},
+    {h:"물권 > 채권 (우선적 효력)", html:`<p>같은 물건을 두고 물권과 채권이 부딪치면 <span class="hl">물권이 이겨요</span>. 예: 집에 저당권(물권)이 있으면, 그 집을 빌려준 사람의 채권보다 저당권자가 먼저 변제받아요.</p>`},
+    {h:"물권적 청구권 3종 (외우기!)", html:`<p>내 물권이 침해당했을 때 쓰는 무기 세 가지예요.</p><ul>
+      <li><strong>반환</strong>청구권 — "내 물건 돌려줘"</li>
+      <li><strong>방해제거</strong>청구권 — "방해되는 거 치워"</li>
+      <li><strong>방해예방</strong>청구권 — "앞으로 방해 안 되게 막아줘"</li>
+    </ul>`}
+  ],
+  exam:"빈칸/원칙이름으로 '물권법정주의(§185)', 물권적 청구권 3종, '물권>채권'이 단골이에요.",
+  quiz:[
+    {type:"원칙",q:"물권은 법률·관습법이 정한 것만 인정되고, 당사자가 새로 만들 수 없다는 원칙은?",a:"물권법정주의 (§185)",why:"물권의 종류·내용을 법으로 고정해 거래 안전을 지키는 원칙이에요."},
+    {type:"OX",q:"물권은 특정인에게만 주장할 수 있는 상대권이다.",a:"X",why:"물권은 <strong>누구에게나</strong> 주장하는 절대권(대세효)이에요. 상대권은 채권이죠."},
+    {type:"OX",q:"같은 물건에 물권과 채권이 충돌하면 물권이 우선한다.",a:"O",why:"물권의 <strong>우선적 효력</strong>. 물권 > 채권."},
+    {type:"단답",q:"물권적 청구권 3종은? (반환 · ___ · ___ 청구권)",a:"방해제거 · 방해예방",why:"반환 / 방해제거 / 방해예방 청구권 — 셋 다 외워두세요."},
+    {type:"단답",q:"물권법정주의의 근거 조문은?",a:"민법 제185조",why:"§185가 '물권은 법률·관습법에 의하는 외에는 임의로 창설하지 못한다'고 정해요."}
+  ]
+},
+{
+  id:"g2", no:"제2강", title:"부동산물권의 양도와 등기", sub:"등기 안 하면 효력이 안 생긴다", icon:"🏠",
+  notes:[
+    {h:"부동산은 '등기'해야 효력 — 성립요건주의", html:`<p><strong>성립요건주의(형식주의)</strong> <span class="law">§186</span>: 부동산 물권변동은 <span class="hl">등기를 해야</span> 비로소 효력이 생겨요. 매매 계약(합의)만으로는 부족하고, <strong>등기까지</strong> 해야 소유권이 넘어가요.</p>`},
+    {h:"공시의 원칙 vs 공신의 원칙 (헷갈림 주의)", html:`<div class="vs">
+      <div><b>공시의 원칙</b>물권 변동은 밖으로 드러내야(등기·인도). "보이게 하라"</div>
+      <div><b>공신의 원칙</b>공시를 믿은 사람을 보호. <span class="hl">부동산은 인정 ✗</span> / 동산 선의취득은 인정 ✓</div>
+    </div>
+    <p>즉 가짜 등기를 믿고 산 사람은 부동산에선 보호 못 받아요(공신력 없음). 하지만 동산은 점유를 믿고 산 선의취득이 인정돼요.</p>`},
+    {h:"등기부 구조 (어디에 뭐가 적히나)", html:`<ul>
+      <li><strong>표제부</strong> — 부동산 자체의 표시(주소·면적 등)</li>
+      <li><strong>갑구</strong> — <span class="hl">소유권</span>에 관한 사항(소유자, 가압류 등)</li>
+      <li><strong>을구</strong> — 소유권 <strong>이외</strong>의 권리(저당권·전세권 등)</li>
+    </ul>`},
+    {h:"등기 없이도 변동되는 경우 — §187", html:`<p><span class="law">§187</span>: <strong>상속·판결·경매·공용징수</strong> 등은 등기 없이도 물권변동이 일어나요. 단, 그 부동산을 <strong>다시 처분하려면</strong> 등기를 먼저 해야 해요.</p>`},
+    {h:"이중매매", html:`<p>A가 같은 집을 B와 C 둘에게 팔면, <span class="hl">먼저 등기한 사람</span>이 소유권을 가져요. 단, 뒤에 산 사람이 '배임에 적극 가담'했다면 그 매매는 <strong>§103 위반으로 무효</strong>가 돼요.</p>`}
+  ],
+  exam:"'성립요건주의(형식주의)', '공신의 원칙—부동산 불인정', 갑구/을구 구분, §187이 잘 나와요.",
+  quiz:[
+    {type:"원칙",q:"부동산 물권변동은 등기를 해야 효력이 생긴다는 원칙은?",a:"성립요건주의 (형식주의, §186)",why:"합의만으론 부족, 등기까지 해야 효력 발생."},
+    {type:"원칙",q:"공시(등기·점유)를 믿은 자를 보호하는 원칙이지만, 부동산에서는 인정되지 않는 것은?",a:"공신의 원칙",why:"부동산 등기에는 공신력이 없어요. 동산 선의취득에서만 인정."},
+    {type:"OX",q:"부동산 등기에는 공신력이 인정된다.",a:"X",why:"부동산은 공신의 원칙 <strong>불인정</strong>. 가짜 등기 믿고 사도 보호 안 돼요."},
+    {type:"OX",q:"동산은 선의취득(공신의 원칙)이 인정된다.",a:"O",why:"동산은 점유에 공신력을 인정해 선의취득(§249)이 돼요."},
+    {type:"단답",q:"등기부에서 '소유권'에 관한 사항이 적히는 곳은?",a:"갑구",why:"갑구=소유권, 을구=소유권 외 권리(저당권 등)."},
+    {type:"사례",q:"A가 자기 집을 B에게 먼저 팔고, 뒤에 C에게도 팔았다. C가 먼저 등기를 마쳤다. 소유자는?",a:"C",why:"먼저 <strong>등기한 사람</strong>이 소유권 취득. 단 C가 배임에 적극 가담했다면 §103 무효."}
+  ]
+},
+{
+  id:"g3", no:"제3강", title:"취득시효", sub:"오래 점유하면 내 것이 된다", icon:"⏳",
+  notes:[
+    {h:"취득시효란?", html:`<p>남의 물건이라도 <strong>오랫동안 내 것처럼 점유</strong>하면 소유권을 얻는 제도예요. '사실 상태가 오래 계속되면 권리로 인정'하는 거죠.</p>`},
+    {h:"부동산 — 두 종류 (숫자 주의!)", html:`<div class="vs">
+      <div><b>점유취득시효 §245①</b><span class="hl">20년</span> 소유의 의사로 평온·공연 점유 → <strong>등기청구권</strong> 생김 → 등기해야 소유권 취득</div>
+      <div><b>등기부취득시효 §245②</b><span class="hl">10년</span> + <strong>선의·무과실</strong> + 등기 → 바로 소유권 취득</div>
+    </div>
+    <p>가장 큰 함정: 점유취득시효는 20년을 채워도 <span class="hl">등기를 해야</span> 소유권이 생겨요. 자동으로 안 돼요!</p>`},
+    {h:"자주점유의 추정", html:`<p><span class="law">§197①</span>: 점유자는 '소유의 의사로(자주점유)' 점유한 것으로 <strong>추정</strong>돼요. 단, 처음부터 남의 땅인 줄 알고 함부로 들어간 <strong>악의의 무단점유</strong>면 이 추정이 깨져 시효취득을 못 해요.</p>`},
+    {h:"완성 후 제3자", html:`<p>점유취득시효를 완성했어도 <strong>등기하기 전에</strong> 원소유자가 제3자에게 팔고 등기해주면, 시효완성자는 <span class="hl">그 제3자에게 대항 못 해요</span>.</p>`},
+    {h:"동산", html:`<p><span class="law">§246</span>: 동산은 <strong>10년</strong>, 선의·무과실이면 <strong>5년</strong>.</p>`}
+  ],
+  exam:"숫자가 생명! 20년/10년/5년, '자주점유의 추정', '등기해야 취득'이 핵심.",
+  quiz:[
+    {type:"단답",q:"부동산 점유취득시효의 기간은?",a:"20년",why:"소유의 의사로 평온·공연하게 20년 점유(§245①)."},
+    {type:"단답",q:"부동산 등기부취득시효의 기간은? (조건도)",a:"10년 (선의·무과실)",why:"등기되어 있고 선의·무과실로 10년 점유하면 바로 취득(§245②)."},
+    {type:"OX",q:"점유취득시효는 20년만 채우면 등기 없이도 곧바로 소유권을 얻는다.",a:"X",why:"등기청구권만 생겨요. <strong>등기까지 해야</strong> 소유권 취득."},
+    {type:"OX",q:"등기부취득시효는 선의·무과실이 필요하다.",a:"O",why:"점유취득시효(20년)는 선의·무과실 불요지만, 등기부취득시효(10년)는 필요해요."},
+    {type:"원칙",q:"점유자는 소유의 의사로 점유한 것으로 추정된다는 것을 무엇이라 하나?",a:"자주점유의 추정 (§197①)",why:"악의의 무단점유면 이 추정이 깨집니다."},
+    {type:"단답",q:"동산 취득시효 기간은? (일반/선의·무과실)",a:"10년 / 5년",why:"§246. 선의·무과실이면 5년으로 단축."}
+  ]
+},
+{
+  id:"g4", no:"제3강", title:"흠 있는 의사표시", sub:"무효냐 취소냐 — 표 하나로 끝", icon:"💬",
+  notes:[
+    {h:"한눈에 보는 표 (제일 중요!)", html:`<ul>
+      <li><strong>비진의표시</strong> <span class="law">§107</span> — 속마음과 다른 표시. 원칙 <strong>유효</strong>. 상대방이 진의 아님을 알았거나 알 수 있었으면 <span class="hl">무효</span>.</li>
+      <li><strong>통정허위표시</strong> <span class="law">§108</span> — 짜고 친 가짜 표시(예: 가짜 매매). <span class="hl">무효</span>.</li>
+      <li><strong>착오</strong> <span class="law">§109</span> — '중요부분' 착오 + 표의자에게 <strong>중과실 없을 것</strong> → <span class="hl">취소</span>. 동기의 착오는 원칙 제외.</li>
+      <li><strong>사기·강박</strong> <span class="law">§110</span> — 속거나 협박당한 표시 → <span class="hl">취소</span>.</li>
+    </ul>`},
+    {h:"무효 vs 취소, 어느 쪽?", html:`<p>외우는 법: <strong>'짜고 친 가짜(통정허위)'와 '사회질서 위반'은 무효</strong>, <strong>'속마음 착각·속음·협박(착오·사기·강박)'은 취소</strong>. 비진의표시만 예외적으로 원칙 유효예요.</p>`},
+    {h:"제3자 사기는 조건이 있어요", html:`<p>계약 상대방이 아니라 <strong>제3자</strong>가 속인 경우엔, 상대방이 그 사기를 <span class="hl">알았거나 알 수 있었어야</span> 취소할 수 있어요(§110②).</p>`},
+    {h:"공통 효과", html:`<ul>
+      <li>모두 <span class="hl">선의의 제3자에게는 대항 불가</span>(거래 안전 보호).</li>
+      <li>취소하면 <strong>처음으로 소급</strong>해 무효(§141).</li>
+    </ul>`}
+  ],
+  exam:"'이것은 무효냐 취소냐' OX·빈칸이 핵심. 통정허위=무효, 사기·강박=취소를 헷갈리지 마세요.",
+  quiz:[
+    {type:"OX",q:"통정허위표시(짜고 한 가짜 표시)는 무효다.",a:"O",why:"§108. 당사자 사이에선 무효, 단 선의의 제3자에겐 대항 못 해요."},
+    {type:"OX",q:"사기·강박에 의한 의사표시는 무효다.",a:"X",why:"<strong>취소</strong>할 수 있는 행위예요(§110). 무효 아님."},
+    {type:"OX",q:"착오로 취소하려면 '중요부분의 착오'이고 표의자에게 '중과실이 없어야' 한다.",a:"O",why:"§109. 중과실이 있으면 취소 못 해요."},
+    {type:"단답",q:"비진의표시라도, 상대방이 진의 아님을 알았거나 알 수 있었을 때의 효력은?",a:"무효",why:"원칙은 유효지만 상대방이 악의·과실이면 무효(§107① 단서)."},
+    {type:"OX",q:"통정허위표시의 무효는 선의의 제3자에게도 주장할 수 있다.",a:"X",why:"선의의 제3자에게는 <strong>대항 불가</strong>. 거래 안전 보호."},
+    {type:"단답",q:"제3자가 사기를 친 경우, 표의자가 취소하려면 상대방이 그 사기를 ___ 했어야 한다.",a:"알았거나 알 수 있었어야",why:"§110②. 상대방이 선의·무과실이면 취소 못 해요."}
+  ]
+},
+{
+  id:"g5", no:"제4강", title:"대리제도", sub:"남이 대신 한 행위, 효과는 누구에게?", icon:"🤝",
+  notes:[
+    {h:"대리의 기본 — 현명주의", html:`<p><strong>대리</strong>는 대리인이 본인을 위해 상대방과 한 행위의 효과가 <span class="hl">본인에게 곧장 귀속</span>되는 제도예요.</p>
+    <p><strong>현명주의</strong> <span class="law">§114·115</span>: 대리인은 "본인을 위한 것임"을 밝혀야 해요. 밝히면 효과는 전부 <strong>본인</strong>에게 가요. 안 밝히면 원칙상 대리인 자신이 한 걸로 봐요(상대방이 알았/알 수 있었으면 본인).</p>`},
+    {h:"하자는 누구 기준? — §116 (★수정 반영)", html:`<p>대리행위에 착오·사기, 선의·악의 같은 흠이 있는지는 <span class="hl">대리인을 기준</span>으로 판단해요(§116①). 실제로 행위한 사람이 대리인이니까요.</p>
+    <p><strong>예외(§116②)</strong>: 본인이 특정 행위를 지시한 경우 —<br>· <strong>본인의 악의는 원용(고려) 가능</strong><br>· <strong>본인이 대리인의 선의를 주장하는 건 불가</strong></p>
+    <p>즉, 본인이 다 알면서(악의) 대리인을 시켜놓고 "내 대리인은 몰랐다"며 선의인 척 보호받을 수 없어요. <span class="hl">본인은 자기 악의의 결과를 떠안아야</span> 해요.</p>`},
+    {h:"권한·금지", html:`<ul>
+      <li>권한이 불분명하면 <strong>보존·이용·개량</strong>만 가능(§118).</li>
+      <li><strong>자기계약·쌍방대리 금지</strong>(§124) — 이해충돌 방지.</li>
+      <li><strong>대리권 남용</strong> — §107① 단서를 유추해 무효로 다룰 수 있어요.</li>
+    </ul>`},
+    {h:"무권대리 / 대리 vs 사자", html:`<p><strong>무권대리</strong>(§130~): 권한 없이 한 대리. 본인이 추인 안 하면 본인에게 효과 안 생기고, 상대방은 무권대리인에게 책임(§135)을 물어요.</p>
+    <p><strong>사자</strong>는 본인의 결정을 단순 전달만 하는 심부름꾼 — 스스로 의사결정하는 대리인과 달라요.</p>`}
+  ],
+  exam:"'효과는 본인에게', '하자는 대리인 기준(§116)', 자기계약·쌍방대리 금지. 사례로 '권리 갖는 사람은?'이 나와요.",
+  quiz:[
+    {type:"원칙",q:"대리인이 '본인을 위한 것임'을 표시해야 한다는 원칙은?",a:"현명주의 (§114·115)",why:"현명하면 효과가 본인에게 귀속돼요."},
+    {type:"사례",q:"대리인 A가 본인 B를 위해 권한 안에서 상대방 C와 매매계약을 했다. 권리·의무를 갖는 사람은 A·B·C 중 누구?",a:"본인 B",why:"현명주의에 따라 효과는 전부 <strong>본인 B</strong>에게 귀속. 대리인 A는 당사자가 아니에요."},
+    {type:"OX",q:"대리행위의 하자는 원칙적으로 본인을 기준으로 판단한다.",a:"X",why:"<strong>대리인 기준</strong>이에요(§116①). 실제 행위자가 대리인이니까요."},
+    {type:"OX",q:"본인이 지시한 사정에 대해서는, 본인은 대리인의 선의를 주장할 수 없다.",a:"O",why:"§116②. 본인의 악의는 원용되고, 대리인의 선의로 숨을 수 없어요."},
+    {type:"단답",q:"이해충돌을 막기 위해 원칙적으로 금지되는 두 가지 대리는?",a:"자기계약 · 쌍방대리 (§124)",why:"같은 사람이 양쪽을 대리하거나 자기와 계약하는 것 금지."},
+    {type:"OX",q:"무권대리행위는 본인이 추인하지 않으면 본인에게 효력이 생기지 않는다.",a:"O",why:"추인 없으면 본인 무관, 상대방은 무권대리인에게 §135 책임을 물어요."}
+  ]
+},
+{
+  id:"g6", no:"제4강", title:"용익물권 · 담보물권", sub:"빌려 쓰는 권리 / 담보 잡는 권리", icon:"🔑",
+  notes:[
+    {h:"두 갈래로 나눠 보기", html:`<p>제한물권은 크게 둘이에요.<br>· <strong>용익물권</strong> = 남의 부동산을 <span class="hl">사용·수익</span>하는 권리<br>· <strong>담보물권</strong> = 빚 못 갚으면 그 물건에서 <span class="hl">우선변제</span> 받는 권리</p>`},
+    {h:"용익물권 3종", html:`<ul>
+      <li><strong>지상권</strong> <span class="law">§279</span> — 남의 토지에 건물·수목 등을 소유하려 토지를 씀. 최단기간: <span class="hl">견고건물 30년 / 일반건물 15년 / 공작물 5년</span>. (구분지상권·분묘기지권·관습법상 법정지상권 포함)</li>
+      <li><strong>지역권</strong> <span class="law">§291</span> — 내 땅(<strong>요역지</strong>)의 편익을 위해 남의 땅(<strong>승역지</strong>)을 이용(예: 통행).</li>
+      <li><strong>전세권</strong> <span class="law">§303</span> — 전세금 내고 부동산 사용 + 우선변제까지(용익+담보 <strong>이중 성격</strong>).</li>
+    </ul>`},
+    {h:"담보물권 3종 (효과 차이 주의!)", html:`<ul>
+      <li><strong>유치권</strong> <span class="law">§320</span> — <strong>법정</strong>담보. 물건에 관해 생긴 채권을 다 받을 때까지 점유. <span class="hl">우선변제권 없음</span>(경매신청은 가능).</li>
+      <li><strong>질권</strong> <span class="law">§329</span> — 동산·권리. 물건을 <strong>점유</strong>로 받아둠. 우선변제 + 물상대위.</li>
+      <li><strong>저당권</strong> <span class="law">§356</span> — 부동산. <span class="hl">점유 안 함(비점유담보)</span>. 우선변제 + 물상대위. 근저당(§357).</li>
+    </ul>`}
+  ],
+  exam:"'유치권은 우선변제권 없음', '저당권은 비점유', 지상권 최단기간(30/15/5), 요역지/승역지가 단골.",
+  quiz:[
+    {type:"단답",q:"용익물권 3종은?",a:"지상권 · 지역권 · 전세권",why:"모두 남의 부동산을 사용·수익하는 권리예요."},
+    {type:"단답",q:"견고한 건물 소유를 위한 지상권의 최단 존속기간은?",a:"30년",why:"견고건물 30년 / 일반건물 15년 / 공작물 5년."},
+    {type:"OX",q:"유치권자는 목적물에서 우선변제를 받을 권리가 있다.",a:"X",why:"유치권엔 <strong>우선변제권이 없어요</strong>. 점유로 압박할 뿐(경매신청은 가능)."},
+    {type:"OX",q:"저당권자는 목적물을 점유한다.",a:"X",why:"저당권은 <strong>비점유담보</strong>. 점유는 질권·유치권의 특징이에요."},
+    {type:"단답",q:"법률에 의해 당연히 성립하는 담보물권(법정담보물권)은?",a:"유치권",why:"§320. 약정 없이 요건만 갖추면 성립."},
+    {type:"단답",q:"지역권에서 편익을 받는 땅(이익을 보는 쪽)을 무엇이라 하나?",a:"요역지",why:"요역지=이익 받는 땅 / 승역지=제공하는 땅."}
+  ]
+},
+{
+  id:"g7", no:"제1강", title:"채권 일반", sub:"채권은 사람을 향한 권리", icon:"📜",
+  notes:[
+    {h:"채권이란?", html:`<p><strong>채권</strong>은 특정인(채권자)이 특정인(채무자)에게 <span class="hl">일정한 행위(급부)를 청구</span>하는 권리예요. 예: "돈 갚아라", "물건 인도해라".</p>`},
+    {h:"채권의 3대 성질 (물권과 대비)", html:`<ul>
+      <li><strong>청구권성</strong> — 직접 지배가 아니라 '~해달라'고 청구.</li>
+      <li><strong>상대권성</strong> — <span class="hl">특정 채무자에게만</span> 주장(물권은 누구에게나).</li>
+      <li><strong>평등성</strong> — 채권자끼리 순위 없이 평등(<strong>채권자 평등의 원칙</strong>). 그래서 물권보다 약해요.</li>
+    </ul>`},
+    {h:"채권관계의 포괄성", html:`<p>채권관계엔 주된 채무만 있는 게 아니라 <strong>항변권·형성권·부수적 의무</strong>가 함께 따라와요. <strong>부수적 의무</strong>(예: 안전 배려)를 어기면 <span class="hl">불완전이행</span>이 됩니다.</p>`}
+  ],
+  exam:"'채권자 평등의 원칙', '상대권(특정인에게만)', '물권>채권'이 빈칸·OX로 나와요.",
+  quiz:[
+    {type:"원칙",q:"채권자들은 서로 우선순위 없이 평등하게 다뤄진다는 원칙은?",a:"채권자 평등의 원칙",why:"그래서 같은 물건에선 물권자가 채권자보다 먼저 변제받아요."},
+    {type:"OX",q:"채권은 누구에게나 주장할 수 있는 절대권이다.",a:"X",why:"채권은 <strong>특정 채무자</strong>에게만 주장하는 상대권이에요."},
+    {type:"단답",q:"안전 배려 같은 '부수적 의무'를 위반하면 무슨 이행 문제가 되나?",a:"불완전이행",why:"채무는 이행했지만 부수의무를 어겨 손해가 난 경우예요."}
+  ]
+},
+{
+  id:"g8", no:"제4강", title:"매매 · 계약 해제 · 담보책임", sub:"해제, 계약금, 하자책임 — 효과 중심", icon:"🛒",
+  notes:[
+    {h:"계약 해제 — 언제 풀 수 있나", html:`<ul>
+      <li><strong>이행지체</strong> <span class="law">§544</span> — 안 해주면 <strong>최고(독촉) 후</strong> 해제.</li>
+      <li><strong>이행불능</strong> <span class="law">§546</span> — 아예 불가능해졌으면 <span class="hl">최고 없이</span> 바로 해제.</li>
+      <li><strong>정기행위</strong> <span class="law">§545</span> — 그 날짜가 생명인 계약(예: 결혼식 케이크)은 때를 놓치면 바로 해제.</li>
+      <li>그밖에 <strong>약정해제권</strong>, <strong>사정변경의 원칙</strong>.</li>
+    </ul>`},
+    {h:"해제의 효과", html:`<p>계약이 <span class="hl">처음부터 없었던 것처럼 소급해 사라져요</span>. 받은 건 <strong>원상회복</strong>(§548)해야 하고, 손해가 있으면 <strong>손해배상도 함께</strong> 청구(§551). 단 제3자는 보호돼요.</p>`},
+    {h:"계약금 = 해약금 추정", html:`<p><strong>해약금 추정</strong> <span class="law">§565</span>: 계약금은 해약금으로 추정돼요. 상대가 <strong>이행에 착수하기 전까지</strong>만 —<br>· 매수인은 <strong>계약금을 포기</strong>하고 해제<br>· 매도인은 <strong>계약금의 배액을 상환</strong>하고 해제<br>이때 <span class="hl">손해배상은 청구 못 해요</span>(계약금으로 갈음).</p>`},
+    {h:"매도인의 담보책임", html:`<p>판 물건에 권리·물건상 하자가 있으면 매도인이 책임져요. <strong>하자담보책임</strong>(§580)은 <span class="hl">무과실책임</span>(매도인 잘못 없어도 책임). 제척기간은 <strong>안 날부터 6개월</strong>(§582).</p>`}
+  ],
+  exam:"'이행불능은 최고 불요', '해약금 해제는 손배 불가', '하자담보=무과실책임', 6개월, 그리고 해약금 계산 사례.",
+  quiz:[
+    {type:"원칙",q:"계약금은 특별한 약정이 없으면 무엇으로 추정되나?",a:"해약금 (해약금 추정, §565)",why:"그래서 이행 착수 전엔 계약금 포기/배액 상환으로 해제할 수 있어요."},
+    {type:"단답",q:"이행불능을 이유로 해제할 때 최고(독촉)가 필요한가?",a:"불요 (필요 없음)",why:"이미 불가능하니 독촉이 무의미해요(§546). 이행지체(§544)는 최고 필요."},
+    {type:"OX",q:"해약금에 의한 해제를 하면 손해배상도 함께 청구할 수 있다.",a:"X",why:"해약금 해제는 손해배상 <strong>불가</strong>. 계약금이 그 역할을 대신해요."},
+    {type:"단답",q:"매도인 하자담보책임의 제척기간은? (안 날부터)",a:"6개월",why:"§582. 하자를 안 날부터 6개월 내 행사."},
+    {type:"OX",q:"매도인의 하자담보책임은 무과실책임이다.",a:"O",why:"§580. 매도인에게 잘못이 없어도 책임져요."},
+    {type:"사례",q:"매매대금 2억, 계약금 2,000만원. 매도인 A가 이행 착수 전 해약금 해제를 하려 한다. A가 상환할 금액은?",a:"4,000만원 (배액 상환)",why:"받은 계약금 2,000 돌려주고 + 같은 액 2,000 추가 = 배액 4,000만원. (매수인이 해제하면 준 2,000만원 포기)"}
+  ]
+},
+{
+  id:"g9", no:"제5강", title:"무효와 취소", sub:"처음부터 무효 vs 취소하면 무효", icon:"❌",
+  notes:[
+    {h:"무효 vs 취소 — 근본 차이", html:`<div class="vs">
+      <div><b>무효</b>처음부터 효력 없음 · <span class="hl">누구나</span> 주장 · 항상 소급 · 예: §103 사회질서 위반, 통정허위표시</div>
+      <div><b>취소</b>일단 유효 → 취소하면 소급 무효 · <span class="hl">취소권자만</span> · 예: 제한능력자, 착오·사기·강박</div>
+    </div>`},
+    {h:"취소의 효과 — 제3자 보호가 갈림길", html:`<p>취소하면 처음부터 무효(§141). 그런데 <strong>제3자</strong>는 취소 사유에 따라 운명이 달라요.</p>
+    <ul>
+      <li><strong>제한능력</strong>이 이유 → 선의·악의 불문 <span class="hl">제3자도 못 이김(절대적)</span>. 미성년자 보호가 더 세요.</li>
+      <li><strong>착오·사기·강박</strong>이 이유 → <span class="hl">선의의 제3자는 보호(상대적)</span>.</li>
+    </ul>
+    <p>또 제한능력자는 받은 이익 중 <strong>현존이익</strong>만 반환하면 돼요(§141 단서). 도박으로 날린 건 반환 불요, 생활비로 쓴 건 이익이 남은 걸로 봐 반환해야 해요.</p>`},
+    {h:"추인 — 취소권 포기", html:`<p><strong>임의추인</strong>(§143·144): 취소 원인이 사라진 뒤 "취소 안 할게" 의사표시.<br><strong>법정추인</strong>(§145): 일정 행위를 하면 자동으로 추인한 걸로 봐요 — <span class="hl">이행 · 이행청구 · 경개 · 담보제공 · 권리양도 · 강제집행</span>. 이의를 달면 성립 안 해요.</p>`},
+    {h:"취소권은 오래 못 간다", html:`<p><strong>취소권 소멸</strong> <span class="law">§146</span>: <span class="hl">추인할 수 있는 날부터 3년</span> 또는 <span class="hl">법률행위를 한 날부터 10년</span> — 둘 중 먼저 오는 때 소멸.</p>`}
+  ],
+  exam:"'무효냐 취소냐', '제3자 보호(제한능력=절대/사기등=상대)', 3년·10년, 현존이익, 법정추인 사유, 일부무효(§137).",
+  quiz:[
+    {type:"OX",q:"사회질서에 위반한 법률행위는 무효다.",a:"O",why:"§103. 처음부터 당연 무효, 누구나 주장 가능."},
+    {type:"OX",q:"미성년자가 동의 없이 단독으로 한 계약은 무효다.",a:"X",why:"<strong>취소</strong>할 수 있는 행위예요. 일단 유효, 취소하면 소급 무효."},
+    {type:"단답",q:"취소권은 추인할 수 있는 날부터 ___년, 법률행위를 한 날부터 ___년 내에 행사해야 한다.",a:"3년 / 10년",why:"§146. 둘 중 먼저 도래하는 기간이 지나면 소멸."},
+    {type:"사례",q:"17세 미성년자가 받은 1,000만원 중 500은 생활비로, 500은 도박으로 썼다. 부모가 취소하면 반환할 금액은?",a:"500만원",why:"생활비 500은 현존이익으로 반환, 도박 500은 현존이익 없어 반환 불요(§141 단서)."},
+    {type:"OX",q:"제한능력을 이유로 한 취소는 선의의 제3자에게도 주장할 수 있다.",a:"O",why:"제한능력 취소는 <strong>절대적 효과</strong>. 반면 착오·사기·강박은 선의 제3자 보호."},
+    {type:"원칙",q:"법률행위의 일부가 무효이면 원칙적으로 전부 무효라는 법리는?",a:"일부무효의 법리 (§137)",why:"단, 나머지만으로도 했을 것이라 인정되면 나머지는 유효."}
+  ]
+},
+{
+  id:"g10", no:"제5강", title:"임대차", sub:"대항력 · 갱신 · 보증금 보호", icon:"🏘️",
+  notes:[
+    {h:"대항력 — '매매는 임대차를 깨뜨린다'", html:`<p>임차권은 원래 <strong>채권</strong>이라 집이 팔리면 새 주인에게 못 버텨요. 이걸 <span class="hl">"매매는 임대차를 깨뜨린다"</span>고 해요.</p>
+    <p>그런데 주택임대차보호법이 세입자를 구해줘요: <strong>① 주택 인도 + ② 주민등록(전입신고)</strong>를 하면 <span class="hl">그 다음날 0시부터</span> 대항력이 생겨 새 주인에게도 버틸 수 있어요.</p>`},
+    {h:"존속기간과 갱신", html:`<ul>
+      <li>최단 존속기간 <strong>2년</strong>(2년 미만으로 정해도 2년으로 봄, 임차인은 짧게도 주장 가능).</li>
+      <li><strong>묵시의 갱신</strong> — 서로 통지 안 하면 같은 조건으로 <strong>2년</strong> 자동 연장.</li>
+      <li><strong>갱신요구권</strong> — 임차인이 적극 요구. <span class="hl">1회 한정, 2년</span>. 증액은 <strong>5% 이내</strong>.</li>
+    </ul>`},
+    {h:"보증금 지키기", html:`<ul>
+      <li><strong>우선변제권</strong> — 대항요건 + <strong>확정일자</strong> → 경매 때 후순위보다 먼저 보증금 회수.</li>
+      <li><strong>최우선변제권</strong> — 소액임차인은 담보물권자보다도 일정액 먼저.</li>
+      <li><strong>임차권등기명령</strong> — 보증금 못 받고 이사 가야 할 때, 등기로 대항력·우선변제권 유지.</li>
+    </ul>`}
+  ],
+  exam:"'매매는 임대차를 깨뜨린다', 대항력 요건(인도+주민등록)·'다음날', 2년/1회/5%, 확정일자=우선변제권.",
+  quiz:[
+    {type:"원칙",q:"임차권은 원칙적으로 새 소유자에게 대항하지 못한다는 것을 나타내는 표현은?",a:"\"매매는 임대차를 깨뜨린다\"",why:"임차권이 채권이라 생기는 원칙. 주임법 대항력이 예외를 만들어요."},
+    {type:"단답",q:"주택임대차 대항력의 두 요건은?",a:"주택 인도 + 주민등록(전입신고)",why:"이 둘을 갖추면 다음날 0시부터 대항력 발생."},
+    {type:"OX",q:"대항력은 인도와 전입신고를 마친 그 날 즉시 발생한다.",a:"X",why:"<strong>그 다음날 0시</strong>부터 발생해요. 날짜 함정 주의!"},
+    {type:"단답",q:"주택임대차의 최단 존속기간은?",a:"2년",why:"2년 미만으로 정해도 2년으로 봐요(임차인은 짧게도 주장 가능)."},
+    {type:"단답",q:"갱신요구권은 몇 회 행사할 수 있고, 증액 한도는?",a:"1회 / 5% 이내",why:"갱신 기간 2년, 1회 한정, 차임·보증금 증액 5% 이내."},
+    {type:"단답",q:"경매 시 후순위보다 먼저 보증금을 받으려면 대항요건 외에 무엇이 필요?",a:"확정일자",why:"대항요건 + 확정일자 = 우선변제권(주임법 §3의2)."}
+  ]
+},
+{
+  id:"g11", no:"제6강", title:"소멸시효", sub:"권리도 안 쓰면 사라진다", icon:"🕰️",
+  notes:[
+    {h:"소멸시효란?", html:`<p>권리자가 <strong>오랫동안 권리를 안 쓰면</strong> 그 권리를 없애는 제도예요. 취지는 한 문장: <span class="hl">"권리 위에 잠자는 자는 보호받지 못한다."</span> (+ 법적 안정성, 증거보전)</p>`},
+    {h:"소멸시효 vs 제척기간", html:`<div class="vs">
+      <div><b>소멸시효</b>중단·정지 <strong>가능</strong> · 당사자 <strong>원용 필요</strong> · 완성 후 이익 포기 가능</div>
+      <div><b>제척기간</b>중단·정지 <strong>불가</strong> · 법원 <strong>직권</strong> 고려 · 포기 불가</div>
+    </div>`},
+    {h:"시효 기간 (숫자 암기 표)", html:`<ul>
+      <li>보통 채권 <span class="hl">10년</span> (§162①)</li>
+      <li>상사채권 <span class="hl">5년</span></li>
+      <li>이자·의사·약사·변호사 채권 등 <strong>3년</strong> (§163)</li>
+      <li>숙박료·음식료·동산사용료 등 <strong>1년</strong> (§164)</li>
+      <li>소유권 외 재산권(지상권·지역권) <strong>20년</strong></li>
+      <li><strong>소유권은 소멸시효에 안 걸려요</strong>(불소멸).</li>
+    </ul>`},
+    {h:"중단 vs 정지", html:`<p><strong>중단</strong>(§168): 경과 기간을 <span class="hl">0으로 리셋</span>. 사유 3가지 — <strong>청구 · 압류(가압류·가처분) · 승인</strong>. 단 '<strong>최고</strong>'(단순 독촉)는 약해서 6개월 내 재판상 청구 등 강력조치를 해야 효력 유지(§174).</p>
+    <p><strong>정지</strong>: 리셋이 아니라 일정 기간 완성을 <strong>미뤄주는</strong> 것(취약자 보호).</p>`},
+    {h:"완성의 효과 / 이익 포기", html:`<p>완성되면 권리가 당연히 소멸(<strong>절대적 소멸설</strong>), 단 소송에선 당사자가 주장해야 해요(변론주의). 시효 이익은 <span class="hl">완성 전엔 포기 불가, 완성 후엔 포기 가능</span>(§184).</p>`}
+  ],
+  exam:"숫자(10/5/3/1/20), '소유권 불소멸', 중단 3사유, 최고 6개월, '권리 위에 잠자는 자', 완성 후만 포기 가능.",
+  quiz:[
+    {type:"단답",q:"일반(보통) 채권의 소멸시효 기간은?",a:"10년",why:"§162①. 가장 기본 숫자."},
+    {type:"단답",q:"숙박료·음식료의 소멸시효 기간은?",a:"1년",why:"§164. 동산사용료·교육비 등도 1년."},
+    {type:"단답",q:"상사채권(영업으로 생긴 채권)의 소멸시효는?",a:"5년",why:"상법 §64. 일반채권 10년과 헷갈리지 마세요."},
+    {type:"OX",q:"소유권도 오래 행사하지 않으면 소멸시효로 소멸한다.",a:"X",why:"소유권은 <strong>소멸시효 대상이 아니에요</strong>(불소멸)."},
+    {type:"단답",q:"소멸시효 중단사유 3가지는?",a:"청구 · 압류(가압류·가처분) · 승인",why:"§168. 중단되면 경과기간이 0으로 리셋돼요."},
+    {type:"단답",q:"'최고(독촉)' 후 시효중단 효력을 유지하려면 며칠 내에 강력조치를 해야 하나?",a:"6개월",why:"§174. 6개월 내 재판상 청구·압류 등이 없으면 최고의 중단효력 상실."},
+    {type:"OX",q:"소멸시효의 이익은 완성되기 전에 미리 포기할 수 있다.",a:"X",why:"완성 <strong>전</strong>엔 포기 불가, 완성 <strong>후</strong>엔 가능(§184)."},
+    {type:"원칙",q:"소멸시효 제도의 취지를 나타내는, '오래 권리를 안 쓴 자는 보호 안 한다'는 법언은?",a:"\"권리 위에 잠자는 자는 보호받지 못한다\"",why:"법적 안정성·증거보전과 함께 소멸시효의 대표 취지예요."}
+  ]
+}
+];
+
+/* ====================== 렌더 ====================== */
+const app = document.getElementById('app');
+const back = document.getElementById('back');
+const hdTitle = document.getElementById('hdTitle');
+const hdMini = document.getElementById('hdMini');
+
+function esc(s){return s;}
+
+function renderHome(){
+  back.classList.remove('show');
+  hdTitle.textContent = "민법의 이해 · 기말 한 손에";
+  hdMini.textContent = DATA.length + "강";
+  let html = `<div class="intro">
+    <h1>⚖️ 기말, 한 손에</h1>
+    <p>시험은 <b>용어·효과 중심</b>이에요. 각 강을 가볍게 읽고, 바로 아래 퀴즈로 스스로 맞춰보세요. 빈칸·OX·원칙이름·사례, 실제 출제 형식 그대로예요.</p>
+    <span class="pill">📖 정리노트 + ✏️ 퀴즈 · 총 ${DATA.length}강</span>
+  </div><div class="grid">`;
+  DATA.forEach((d,i)=>{
+    html += `<div class="lcard" onclick="openLesson(${i})">
+      <div class="ic">${d.icon}</div>
+      <div class="tx">
+        <div class="no">${d.no}</div>
+        <div class="tt">${d.title}</div>
+        <div class="ss">${d.sub}</div>
+      </div>
+      <div class="arr">›</div>
+    </div>`;
+  });
+  html += `</div>`;
+  app.innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+let curTab = 'note';
+function openLesson(i, tab){
+  const d = DATA[i];
+  curTab = tab || 'note';
+  back.classList.add('show');
+  hdTitle.textContent = d.title;
+  hdMini.textContent = d.no;
+  let html = `<div class="dtitle"><div class="ic">${d.icon}</div><div><h2>${d.title}</h2><div class="ss">${d.no} · ${d.sub}</div></div></div>`;
+  html += `<div class="tabs">
+    <div class="tab ${curTab==='note'?'on':''}" onclick="openLesson(${i},'note')">📖 정리노트</div>
+    <div class="tab ${curTab==='quiz'?'on':''}" onclick="openLesson(${i},'quiz')">✏️ 퀴즈 ${d.quiz.length}</div>
+  </div>`;
+
+  if(curTab==='note'){
+    if(d.exam){html += `<div class="exam"><div class="lab">🎯 시험 출제 포인트</div><p>${d.exam}</p></div>`;}
+    d.notes.forEach(s=>{
+      html += `<div class="sec"><h3><span class="dot"></span>${s.h}</h3>${s.html}</div>`;
+    });
+    html += `<div class="toTop" onclick="openLesson(${i},'quiz')">→ 이 강 퀴즈 풀어보기 ✏️</div>`;
+  } else {
+    html += `<div class="qhead">물음을 먼저 머릿속으로 답해보고, '정답 보기'를 누르세요. (${d.quiz.length}문항)</div>`;
+    d.quiz.forEach((q,qi)=>{
+      const aid = `a_${i}_${qi}`;
+      let acls = 'a';
+      if(q.type==='OX' && q.a==='O') acls='a ox-o';
+      if(q.type==='OX' && q.a==='X') acls='a ox-x';
+      html += `<div class="q">
+        <span class="qtype t-${q.type}">${q.type}</span>
+        <div class="qq">${q.q}</div>
+        <button class="reveal" onclick="document.getElementById('${aid}').classList.toggle('show'); this.style.display='none';">정답 보기</button>
+        <div class="ans" id="${aid}">
+          <div class="${acls}">${q.a}</div>
+          <div class="why">${q.why}</div>
+        </div>
+      </div>`;
+    });
+    html += `<div class="toTop" onclick="(function(){var n=${i+1}; if(n<${DATA.length}){openLesson(n,'note');}else{goHome();}})()">${i+1<DATA.length?'다음 강으로 →':'목록으로 →'}</div>`;
+  }
+  app.innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function goHome(){ location.hash=''; renderHome(); }
+back.onclick = goHome;
+window.openLesson = (i,tab)=>{ location.hash = 'g'+i+(tab==='quiz'?'/quiz':''); openLesson(i,tab); };
+window.goHome = goHome;
+
+// simple hash restore
+function fromHash(){
+  const h = location.hash.replace('#','');
+  const m = h.match(/^g(\d+)(\/quiz)?$/);
+  if(m){ openLesson(parseInt(m[1],10), m[2]?'quiz':'note'); }
+  else renderHome();
+}
+window.addEventListener('hashchange',()=>{ if(!location.hash) renderHome(); });
+fromHash();
+</script>
+</body>
+</html>
