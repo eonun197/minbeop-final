@@ -451,7 +451,7 @@ function renderHome(){
     <span class="pill">📖 정리노트 + ✏️ 퀴즈 · 총 ${DATA.length}강</span>
   </div><div class="grid">`;
   DATA.forEach((d,i)=>{
-    html += `<div class="lcard" onclick="openLesson(${i})">
+    html += `<div class="lcard" onclick="nav(${i})">
       <div class="ic">${d.icon}</div>
       <div class="tx">
         <div class="no">${d.no}</div>
@@ -467,7 +467,7 @@ function renderHome(){
 }
 
 let curTab = 'note';
-function openLesson(i, tab){
+function renderLesson(i, tab){
   const d = DATA[i];
   curTab = tab || 'note';
   back.classList.add('show');
@@ -475,8 +475,8 @@ function openLesson(i, tab){
   hdMini.textContent = d.no;
   let html = `<div class="dtitle"><div class="ic">${d.icon}</div><div><h2>${d.title}</h2><div class="ss">${d.no} · ${d.sub}</div></div></div>`;
   html += `<div class="tabs">
-    <div class="tab ${curTab==='note'?'on':''}" onclick="openLesson(${i},'note')">📖 정리노트</div>
-    <div class="tab ${curTab==='quiz'?'on':''}" onclick="openLesson(${i},'quiz')">✏️ 퀴즈 ${d.quiz.length}</div>
+    <div class="tab ${curTab==='note'?'on':''}" onclick="nav(${i},'note')">📖 정리노트</div>
+    <div class="tab ${curTab==='quiz'?'on':''}" onclick="nav(${i},'quiz')">✏️ 퀴즈 ${d.quiz.length}</div>
   </div>`;
 
   if(curTab==='note'){
@@ -484,7 +484,7 @@ function openLesson(i, tab){
     d.notes.forEach(s=>{
       html += `<div class="sec"><h3><span class="dot"></span>${s.h}</h3>${s.html}</div>`;
     });
-    html += `<div class="toTop" onclick="openLesson(${i},'quiz')">→ 이 강 퀴즈 풀어보기 ✏️</div>`;
+    html += `<div class="toTop" onclick="nav(${i},'quiz')">→ 이 강 퀴즈 풀어보기 ✏️</div>`;
   } else {
     html += `<div class="qhead">물음을 먼저 머릿속으로 답해보고, '정답 보기'를 누르세요. (${d.quiz.length}문항)</div>`;
     d.quiz.forEach((q,qi)=>{
@@ -502,26 +502,23 @@ function openLesson(i, tab){
         </div>
       </div>`;
     });
-    html += `<div class="toTop" onclick="(function(){var n=${i+1}; if(n<${DATA.length}){openLesson(n,'note');}else{goHome();}})()">${i+1<DATA.length?'다음 강으로 →':'목록으로 →'}</div>`;
+    html += `<div class="toTop" onclick="${(i+1<DATA.length)?('nav('+(i+1)+",'note')"):'goHome()'}">${i+1<DATA.length?'다음 강으로 →':'목록으로 →'}</div>`;
   }
   app.innerHTML = html;
   window.scrollTo(0,0);
 }
 
-function goHome(){ location.hash=''; renderHome(); }
-back.onclick = goHome;
-window.openLesson = (i,tab)=>{ location.hash = 'g'+i+(tab==='quiz'?'/quiz':''); openLesson(i,tab); };
-window.goHome = goHome;
-
-// simple hash restore
-function fromHash(){
-  const h = location.hash.replace('#','');
-  const m = h.match(/^g(\d+)(\/quiz)?$/);
-  if(m){ openLesson(parseInt(m[1],10), m[2]?'quiz':'note'); }
-  else renderHome();
+function nav(i,tab){ location.hash = 'g'+i+(tab==='quiz'?'/quiz':''); }
+function goHome(){ if(location.hash){ location.hash=''; } else { renderHome(); } }
+function route(){
+  const m = location.hash.replace('#','').match(/^g(\d+)(\/quiz)?$/);
+  if(m){ renderLesson(parseInt(m[1],10), m[2]?'quiz':'note'); }
+  else { renderHome(); }
 }
-window.addEventListener('hashchange',()=>{ if(!location.hash) renderHome(); });
-fromHash();
+window.nav = nav; window.goHome = goHome;
+back.onclick = goHome;
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
