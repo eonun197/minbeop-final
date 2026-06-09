@@ -142,6 +142,21 @@
   .ans .why{font-size:14.5px;color:var(--ink);line-height:1.65;}
   .ans .why strong{color:var(--navy);}
 
+  /* typing answer */
+  .tin{display:flex;gap:8px;margin-bottom:9px;}
+  .qinput{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:11px;
+    padding:11px 12px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);
+    -webkit-appearance:none;}
+  .qinput:focus{outline:none;border-color:var(--accent);}
+  .qinput.ok{border-color:#1f7a4d;background:#f0fbf5;}
+  .qinput.no{border-color:#c0392b;background:#fdf1ef;}
+  .grade{border:0;background:var(--accent);color:#fff;font-weight:800;font-size:15px;
+    padding:0 16px;border-radius:11px;cursor:pointer;white-space:nowrap;}
+  .res{font-size:14.5px;font-weight:800;margin-bottom:9px;}
+  .res:empty{display:none;margin:0;}
+  .rok{color:#1f7a4d;}
+  .rno{color:#c0392b;}
+
   footer{text-align:center;color:#aab2c0;font-size:12px;padding:20px 0 8px;}
   .toTop{display:block;text-align:center;color:var(--accent);font-weight:800;font-size:14px;
     padding:14px;cursor:pointer;}
@@ -639,16 +654,24 @@ function renderLesson(i, tab){
     });
     html += `<div class="toTop" onclick="nav(${i},'quiz')">→ 이 강 퀴즈 풀어보기 ✏️</div>`;
   } else {
-    html += `<div class="qhead">물음을 먼저 머릿속으로 답해보고, '정답 보기'를 누르세요. (${d.quiz.length}문항)</div>`;
+    html += `<div class="qhead">답을 직접 입력해 채점하거나, '정답 보기'로 확인하세요. (${d.quiz.length}문항)</div>`;
     d.quiz.forEach((q,qi)=>{
       const aid = `a_${i}_${qi}`;
       let acls = 'a';
       if(q.type==='OX' && q.a==='O') acls='a ox-o';
       if(q.type==='OX' && q.a==='X') acls='a ox-x';
+      const ph = q.type==='OX' ? 'O 또는 X' : '답을 입력하세요';
       html += `<div class="q">
         <span class="qtype t-${q.type}">${q.type}</span><span class="qnum">${qi+1}/${d.quiz.length}</span>
         <div class="qq">${q.q}</div>
-        <button class="reveal" onclick="document.getElementById('${aid}').classList.toggle('show'); this.style.display='none';">정답 보기</button>
+        <div class="tin">
+          <input id="inp_${i}_${qi}" class="qinput" type="text" placeholder="${ph}"
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            enterkeyhint="done" onkeydown="if(event.key==='Enter'){event.preventDefault();gradeAns(${i},${qi});}">
+          <button class="grade" onclick="gradeAns(${i},${qi})">채점</button>
+        </div>
+        <div class="res" id="res_${i}_${qi}"></div>
+        <button class="reveal" id="rv_${i}_${qi}" onclick="document.getElementById('${aid}').classList.toggle('show'); this.style.display='none';">정답 보기</button>
         <div class="ans" id="${aid}">
           <div class="${acls}">${q.a}</div>
           <div class="why">${q.why}</div>
@@ -660,6 +683,48 @@ function renderLesson(i, tab){
   app.innerHTML = html;
   window.scrollTo(0,0);
 }
+
+/* 입력 답 정규화: html태그·(괄호)·기호·공백 제거 */
+function normAns(s){
+  return String(s)
+    .replace(/<[^>]+>/g,'')
+    .replace(/\([^)]*\)/g,'')
+    .replace(/[§\s.,'"`~!?·•∙\-–—_/\\|]/g,'')
+    .toLowerCase();
+}
+function gradeAns(i,qi){
+  const q = DATA[i].quiz[qi];
+  const inp = document.getElementById('inp_'+i+'_'+qi);
+  const res = document.getElementById('res_'+i+'_'+qi);
+  const ansBox = document.getElementById('a_'+i+'_'+qi);
+  const rv = document.getElementById('rv_'+i+'_'+qi);
+  const user = (inp.value||'').trim();
+  if(!user){ res.innerHTML='<span class="rno">답을 입력해 주세요.</span>'; inp.focus(); return; }
+  let ok=false;
+  if(q.type==='OX'){
+    const u=user.toUpperCase();
+    const isO=['O','0','ㅇ','오','맞','맞다','맞음','T','TRUE','예','네','Y'].some(x=>u===x||u.startsWith(x));
+    const isX=['X','ㄴ','ㄱ','틀','틀림','틀리','아니','아냐','F','FALSE','노','N'].some(x=>u===x||u.startsWith(x));
+    ok = (q.a==='O') ? (isO && !isX) : (isX && !isO);
+  } else {
+    const nu=normAns(user), na=normAns(q.a);
+    if(nu.length){
+      if(nu===na) ok=true;                       // 정규화 후 완전 일치
+      else if(na.length>=4 && nu===na) ok=true;
+      else {                                     // "A / B" · "A·B" 같은 분리형: 한 조각이라도 정확히 맞으면 인정
+        const segs = String(q.a).replace(/<[^>]+>/g,'').split(/[\/·•∙]/).map(normAns).filter(x=>x.length>=2);
+        if(segs.length>1 && segs.includes(nu)) ok=true;
+      }
+    }
+  }
+  inp.classList.remove('ok','no'); inp.classList.add(ok?'ok':'no');
+  res.innerHTML = ok
+    ? '<span class="rok">✓ 맞았어요!</span>'
+    : '<span class="rno">✗ 아쉬워요 — 아래 정답을 확인하세요.</span>';
+  ansBox.classList.add('show');
+  if(rv) rv.style.display='none';
+}
+window.gradeAns = gradeAns;
 
 function nav(i,tab){ location.hash = 'g'+i+(tab==='quiz'?'/quiz':''); }
 function goHome(){ if(location.hash){ location.hash=''; } else { renderHome(); } }
